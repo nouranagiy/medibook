@@ -17,3 +17,4 @@ class AuthFailure extends AuthState {
     message
   ];
 }
+class AuthAuthenticated extends AuthState {}

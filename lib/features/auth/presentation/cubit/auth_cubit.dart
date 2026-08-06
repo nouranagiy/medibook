@@ -16,7 +16,7 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         password: password,
       );
-      emit(AuthSuccess());
+      emit(AuthAuthenticated());
     } catch (e) {
       emit(
         AuthFailure(
@@ -35,7 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         password: password,
       );
-      emit(AuthSuccess());
+      emit(AuthAuthenticated());
     } catch(e){
       emit(
         AuthFailure(

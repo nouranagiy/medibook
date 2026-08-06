@@ -4,11 +4,12 @@ import 'package:medibook/app/app_text_styles.dart';
 import 'package:medibook/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:medibook/features/auth/presentation/cubit/auth_state.dart';
 import '../widgets/custom_text_field.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../app/routes/app_routes.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
-  State<LoginScreen> createState() =>
-      _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
@@ -41,15 +42,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomTextField(
                   hint: "Email",
                   icon: Icons.email_outlined,
-                  controller:
-                  emailController,
+                  controller: emailController,
                   validator: (value){
                     if(value == null ||
                         value.isEmpty){
                       return "Please enter email";
                     }
-                    final emailRegex =
-                    RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
                     if(!emailRegex.hasMatch(value)){
                       return "Enter valid email";
                     }
@@ -61,20 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   hint: "Password",
                   suffixIcon: IconButton(
                     icon: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                     ),
                     onPressed: (){
                       setState(() {
-                        isPasswordVisible =
-                        !isPasswordVisible;
+                        isPasswordVisible = !isPasswordVisible;
                       });
                     },
                   ),
                   obscureText:true,
-                  controller:
-                  passwordController,
+                  controller: passwordController,
                   validator:(value){
                     if(value == null ||
                         value.isEmpty){
@@ -91,34 +86,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: (){
-                      debugPrint(
-                          "Forgot Password"
-                      );
+                      debugPrint("Forgot Password");
                     },
-                    child: const Text(
+                    child: Text(
                       "Forgot Password?",
                     ),
                   ),
                 ),
                 BlocConsumer<AuthCubit, AuthState>(
                   listener: (context, state) {
-                    if(state is AuthSuccess){
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Login Successful",
-                          ),
-                        ),
-                      );
+                      if(state is AuthAuthenticated){
+                        context.go(
+                          AppRoutes.home,
+                        );
                     }
                     if(state is AuthFailure){
                       ScaffoldMessenger.of(context)
                           .showSnackBar(
                         SnackBar(
-                          content: Text(
-                            state.message,
-                          ),
+                          content: Text(state.message,),
                         ),
                       );
                     }
@@ -160,9 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextButton(
                       onPressed: (){
-                        debugPrint(
-                            "Register"
-                        );
+                        context.push(AppRoutes.register);
                       },
                       child: const Text(
                         "Create Account",
