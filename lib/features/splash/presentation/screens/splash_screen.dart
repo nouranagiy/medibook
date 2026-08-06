@@ -25,7 +25,11 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeIn,
     );
     _controller.forward();
-    context.go(AppRoutes.onboarding);
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        context.go(AppRoutes.onboarding);
+      }
+    });
   }
   @override
   void dispose() {
@@ -47,8 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
                 width: 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius:
-                  BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: const Icon(
                   Icons.medical_services_outlined,

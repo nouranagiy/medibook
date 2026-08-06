@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medibook/app/app_text_styles.dart';
+import 'package:medibook/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:medibook/features/auth/presentation/cubit/auth_state.dart';
 import '../widgets/custom_text_field.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -46,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return "Please enter email";
                     }
                     final emailRegex =
-                    RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
                     if(!emailRegex.hasMatch(value)){
                       return "Enter valid email";
                     }
@@ -97,19 +100,55 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed:(){
-                    if(formKey.currentState!
-                        .validate()){
-                      debugPrint(
-                        "Login Success",
+                BlocConsumer<AuthCubit, AuthState>(
+                  listener: (context, state) {
+                    if(state is AuthSuccess){
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Login Successful",
+                          ),
+                        ),
+                      );
+                    }
+                    if(state is AuthFailure){
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            state.message,
+                          ),
+                        ),
                       );
                     }
                   },
-                  child:
-                  const Text(
-                    "Login",
-                  ),
+                  builder: (context, state) {
+                    if(state is AuthLoading){
+                      return const Center(
+                        child:
+                        CircularProgressIndicator(),
+                      );
+                    }
+                    return ElevatedButton(
+                      onPressed: (){
+                        if(formKey.currentState!
+                            .validate()){
+                          context.read<AuthCubit>()
+                              .login(
+                            email:
+                            emailController.text.trim(),
+                            password:
+                            passwordController.text.trim(),
+                          );
+                        }
+                      },
+                      child:
+                      const Text(
+                        "Login",
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height:5),
                 Row(
